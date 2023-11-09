@@ -47,6 +47,10 @@ logger = logging.getLogger("basicLogger")
 
 class KafkaConnector():
     def __init__(self) -> None:
+        self.client = None
+        self.topic = None
+
+    def connect(self):
         retries = 0
         while retries >= app_config["events"]["retries"]:
             try:
