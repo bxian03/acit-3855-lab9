@@ -1,0 +1,10 @@
+version: 1
+
+eventstore1:
+  url: http://localhost:8090/pizza/order
+eventstore2:
+  url: http://localhost:8090/drivers/order
+events:
+  hostname: 
+  port: 9092
+  topic: events

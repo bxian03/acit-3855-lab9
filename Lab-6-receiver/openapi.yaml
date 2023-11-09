@@ -1,0 +1,91 @@
+---
+openapi: 3.0.0
+info:
+  title: Simple Pizza API
+  description: This is an API for ordering pizzas and picking up pizzas for delivery
+  contact:
+    email: brian.xian@bxian03.systems
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- name: pizza
+  description: Operations available to customers
+- name: drivers
+  description: Operations available to delivery drivers
+paths:
+  /pizza/order:
+    post:
+      tags:
+      - pizza
+      description: Upload new pizza order
+      requestBody:
+        description: Pizza in pizza order
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pizza'
+      responses:
+        "201":
+          description: "Successfully uploaded new pizza order"
+      operationId: app.upload_pizza_order
+  /drivers/order:
+    post:
+      tags:
+      - drivers
+      description: Upload available order
+      requestBody:
+        description: Order
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        "201":
+          description: Successfully uploaded an available order
+      operationId: app.upload_driver_order
+components:
+  schemas:
+    Order:
+      required:
+      - customer_address
+      - customer_id
+      - order_cost
+      - order_id
+      type: object
+      properties:
+        order_id:
+          type: string
+          format: uuid
+        customer_id:
+          type: string
+          format: uuid
+        customer_address:
+          type: string
+        order_cost:
+          type: number
+          format: float
+        pizza_quanitity:
+          type: number
+          format: int
+    Pizza:
+      type: object
+      properties:
+        pizza_id:
+          type: string
+          format: uuid
+        pizza_sauce:
+          type: string
+        pizza_cheese:
+          type: string
+        pizza_toppings:
+          type: string
+        pizza_cost:
+          type: number
+          format: float
+        pizza_quantity:
+          type: number
+          format: int

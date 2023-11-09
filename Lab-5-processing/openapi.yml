@@ -1,0 +1,70 @@
+---
+openapi: 3.0.0
+info:
+  description: This is an API for ordering pizzas and picking up pizzas for delivery
+  version: "1.0.0"
+  title: Simple Pizza API
+  contact:
+    email: brian.xian@bxian03.systems
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: pizza
+    description: Operations available to customers
+  - name: drivers
+    description: Operations available to delivery drivers
+
+paths:
+  /stats:
+    get:
+      tags:
+      - pizza
+      summary: gets new pizza reqeusts 
+      operationId: app.get_stats
+      description: Gets time requests after a specific timestamp
+      responses:
+        '200':
+          description: Successfully returned a list of time off requests
+          content:
+            application/json:
+              schema:
+              
+                items:
+                  $ref: '#/components/schemas/stats'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    stats:
+      required:
+      - pizza_mean_cost
+      - pizza_mean_quantity
+      - order_mean_cost
+      - order_mean_quantity
+      properties:
+        pizza_mean_cost:
+          type: number
+          format: float
+          example: 50.0
+        pizza_mean_quantity:
+          type: number
+          format: float
+          example: 50.0
+        order_mean_cost:
+          type: number
+          format: float
+          example: 50.0
+        order_mean_quantity:
+          type: number
+          format: float
+          example: 50.0
+      type: object

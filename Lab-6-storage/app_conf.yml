@@ -1,0 +1,12 @@
+---
+version: 1
+events:
+  hostname: 
+  port: 9092
+  topic: events
+mysql:
+  MYSQL_USER: user
+  MYSQL_PASSWORD: 
+  MYSQL_DATABASE: events
+  MYSQL_PORT: 3306
+  MYSQL_HOSTNAME: 

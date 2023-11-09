@@ -1,0 +1,131 @@
+---
+openapi: 3.0.0
+info:
+  title: Audit API
+  description: This is a simple API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /
+paths:
+  /pizza_order:
+    get:
+      summary: get a pizza order from history
+      description: gets a pizza order from from the event store
+      operationId: app.get_pizza_order
+      parameters:
+      - name: index
+        in: query
+        description: gets pizza order at the index in the event store
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          example: 50
+      responses:
+        "200":
+          description: Successfully returned a pizza order event
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/pizza_order'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+  /driver_order:
+    get:
+      summary: get a driver order from history
+      description: gets a driver order from from the event store
+      operationId: app.get_driver_order
+      parameters:
+      - name: index
+        in: query
+        description: gets driver order at the index in the event store
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          example: 50
+      responses:
+        "200":
+          description: Successfully returned a driver order event
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/driver_order'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+components:
+  schemas:
+    driver_order:
+      required:
+      - customer_address
+      - customer_id
+      - order_cost
+      - order_id
+      type: object
+      properties:
+        order_id:
+          type: string
+          format: uuid
+        customer_id:
+          type: string
+          format: uuid
+        customer_address:
+          type: string
+        order_cost:
+          type: number
+          format: float
+        pizza_quanitity:
+          type: number
+          format: int
+    pizza_order:
+      type: object
+      properties:
+        pizza_id:
+          type: string
+          format: uuid
+        pizza_suace:
+          type: string
+        pizza_cheese:
+          type: string
+        pizza_toppings:
+          type: string
+        pizza_cost:
+          type: number
+          format: float
+        pizza_quanitity:
+          type: number
+          format: int
+    inline_response_400:
+      type: object
+      properties:
+        message:
+          type: string

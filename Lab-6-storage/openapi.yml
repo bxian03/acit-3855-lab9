@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  description: This is an API for ordering pizzas and picking up pizzas for delivery
+  version: "1.0.0"
+  title: Simple Pizza API
+  contact:
+    email: brian.xian@bxian03.systems
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: pizza
+    description: Operations available to customers
+  - name: drivers
+    description: Operations available to delivery drivers
+paths:
+  /pizza/order:
+    get:
+      tags:
+        - pizza
+      operationId: app.get_pizza_order
+      description: Obtain info about an a pizza order based on a timestamp
+      parameters:
+        - name: timestamp
+          in: query
+          description: limit results by time
+          schema:
+            type: string
+            format: date-time
+            example: 2016-08-29T09:12:33.001Z
+      responses:
+        '200':
+          description: Successfully returned pizza orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pizza'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /drivers/order:
+    get:
+      tags:
+        - drivers
+      operationId: app.get_driver_order
+      description: Obtain info about a driver order based on a time stamp
+      parameters:
+        - name: timestamp
+          in: query
+          description: limit results by time
+          schema:
+            type: string
+            format: date-time
+            example: 2016-08-29T09:12:33.001Z
+      responses:
+        '200':
+          description: Successfully returned driver orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      
+components:
+  schemas:
+    Order:
+      type: object
+      required:
+        - order_id
+        - customer_id
+        - customer_address
+        - order_cost
+      properties:
+        order_id:
+          type: string
+          format: uuid
+        customer_id:
+          type: string
+          format: uuid
+        customer_address:
+          type: string
+        order_cost:
+          type: number
+          format: float
+        pizza_quanitity:
+          type: number
+          format: int
+    Pizza:
+      type: object
+      properties:
+        pizza_id:
+          type: string
+          format: uuid
+        pizza_suace:
+          type: string
+        pizza_cheese:
+          type: string
+        pizza_toppings:
+          type: string
+        pizza_cost:
+          type: number
+          format: float
+        pizza_quanitity:
+          type: number
+          format: int
