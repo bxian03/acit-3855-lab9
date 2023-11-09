@@ -44,24 +44,25 @@ logger = logging.getLogger("basicLogger")
 #         logger.error("Failed to connect to Kafka. Retrying...")
 #         time.sleep(app_config["events"]["timeout"])
 #         retries += 1
-retries = 0
-while retries >= app_config["events"]["retries"]:
-    try:
-        logger.info("Connecting to Kafka...")
-        if retries > 0:
-            logger.info(f"Retried {retries} times")
-        client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
-        global topic
-        topic = client.topics[str.encode(KAFKA_TOPIC)]
-        logger.info("Successfully connected to Kafka")
-        retries = app_config["events"]["retries"]
-        break
-    except:
-        logger.error("Failed to connect to Kafka. Retrying...")
-        time.sleep(app_config["events"]["timeout"])
-        retries += 1
 
-producer = topic.get_sync_producer()
+def kafka_connection():
+    retries = 0
+    while retries >= app_config["events"]["retries"]:
+        try:
+            logger.info("Connecting to Kafka...")
+            if retries > 0:
+                logger.info(f"Retried {retries} times")
+            client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
+            global topic
+            topic = client.topics[str.encode(KAFKA_TOPIC)]
+            logger.info("Successfully connected to Kafka")
+            retries = app_config["events"]["retries"]
+            return topic.get_sync_producer()
+            break
+        except:
+            logger.error("Failed to connect to Kafka. Retrying...")
+            time.sleep(app_config["events"]["timeout"])
+            retries += 1
 
 def write_log(
     event_name: str, event_type: str, response_code: int = None, trace_id: str = None
@@ -124,6 +125,7 @@ def upload_driver_order(body):
 
 app = connexion.FlaskApp(__name__, specification_dir="")
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
+producer = kafka_connection()
 
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
