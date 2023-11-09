@@ -45,32 +45,6 @@ def write_log(event_name: str, trace_id: str):
 
     logger.debug(log)
 
-
-# def upload_pizza_order(body):
-#     # receives pizza order uploads
-
-#     session = DB_SESSION()
-
-#     pizza_order = PizzaOrder(
-#         body["pizza_id"],
-#         body["pizza_sauce"],
-#         body["pizza_cheese"],
-#         body["pizza_toppings"],
-#         body["pizza_cost"],
-#         body["pizza_quantity"],
-#         body["trace_id"],
-#     )
-
-#     session.add(pizza_order)
-
-#     session.commit()
-#     session.close()
-
-#     write_log("pizza order", body["trace_id"])
-
-#     return NoContent, 201
-
-
 def get_pizza_order(timestamp: str):
     session = DB_SESSION()
 
@@ -94,29 +68,6 @@ def get_pizza_order(timestamp: str):
     )
 
     return results_list, 200
-
-
-# def upload_driver_order(body):
-#     session = DB_SESSION()
-
-#     driver_order = DriverOrder(
-#         body["order_id"],
-#         body["customer_id"],
-#         body["customer_address"],
-#         body["order_cost"],
-#         body["pizza_quantity"],
-#         body["trace_id"],
-#     )
-
-#     session.add(driver_order)
-
-#     session.commit()
-#     session.close()
-
-#     write_log("driver order", body["trace_id"])
-
-#     return NoContent, 201
-
 
 def get_driver_order(timestamp):
     session = DB_SESSION()
