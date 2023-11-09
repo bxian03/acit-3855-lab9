@@ -61,6 +61,8 @@ while retries >= app_config["events"]["retries"]:
         time.sleep(app_config["events"]["timeout"])
         retries += 1
 
+producer = topic.get_sync_producer()
+
 def write_log(
     event_name: str, event_type: str, response_code: int = None, trace_id: str = None
 ) -> uuid.UUID:
@@ -85,7 +87,7 @@ def upload_pizza_order(body):
     # response = requests.post(URL1, headers=headers, json=body)
     # client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
     # topic = client.topics[str.encode(KAFKA_TOPIC)]
-    producer = topic.get_sync_producer()
+    # producer = topic.get_sync_producer()
     msg = {
         "type": "pizza_order",
         "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
@@ -105,7 +107,7 @@ def upload_driver_order(body):
 
     # client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
     # topic = client.topics[str.encode(KAFKA_TOPIC)]
-    producer = topic.get_sync_producer()
+    # producer = topic.get_sync_producer()
 
     msg = {
         "type": "driver_order",
