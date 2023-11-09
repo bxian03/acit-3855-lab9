@@ -51,6 +51,7 @@ while retries >= app_config["events"]["retries"]:
         if retries > 0:
             logger.info(f"Retried {retries} times")
         client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
+        global topic
         topic = client.topics[str.encode(KAFKA_TOPIC)]
         logger.info("Successfully connected to Kafka")
         retries = app_config["events"]["retries"]
@@ -124,4 +125,3 @@ app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
-    producer = connect()
