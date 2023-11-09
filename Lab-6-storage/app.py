@@ -105,7 +105,7 @@ def process_messages():
         app_config["events"]["port"],
     )
     retries = 0
-    while retries >= app_config["events"]["retries"]:
+    while retries <= app_config["events"]["retries"]:
         try:
             logger.info("Connecting to Kafka...")
             if retries > 0:
