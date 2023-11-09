@@ -71,6 +71,7 @@ class KafkaConnector():
         return self.topic.get_sync_producer()
     
 kc = KafkaConnector()
+kc.connect()
 
 def write_log(
     event_name: str, event_type: str, response_code: int = None, trace_id: str = None
