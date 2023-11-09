@@ -47,7 +47,7 @@ logger = logging.getLogger("basicLogger")
 
 def kafka_connection():
     retries = 0
-    while retries >= app_config["events"]["retries"]:
+    while retries <= app_config["events"]["retries"]:
         try:
             logger.info("Connecting to Kafka...")
             if retries > 0:
@@ -124,6 +124,7 @@ def upload_driver_order(body):
 
 app = connexion.FlaskApp(__name__, specification_dir="")
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
+global producer
 producer = kafka_connection()
 
 if __name__ == "__main__":
