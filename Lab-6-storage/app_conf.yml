@@ -4,6 +4,8 @@ events:
   hostname: 
   port: 9092
   topic: events
+  retries: 10
+  timeout: 15
 mysql:
   MYSQL_USER: user
   MYSQL_PASSWORD: 

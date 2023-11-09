@@ -15,6 +15,7 @@ import json
 from pykafka import KafkaClient
 from pykafka.common import OffsetType
 from threading import Thread
+import time
 
 with open("app_conf.yml", "r") as fp:
     app_config = yaml.safe_load(fp.read())
@@ -103,8 +104,23 @@ def process_messages():
         app_config["events"]["hostname"],
         app_config["events"]["port"],
     )
-    client = KafkaClient(hosts=hostname)
-    topic = client.topics[str.encode(app_config["events"]["topic"])]
+    retries = 0
+    while retries >= app_config["events"]["retries"]:
+        try:
+            logger.info("Connecting to Kafka...")
+            if retries > 0:
+                logger.info(f"Retried {retries} times")
+            client = KafkaClient(hosts=hostname)
+            topic = client.topics[str.encode(app_config["events"]["topic"])]
+            logger.info("Successfully connected to Kafka")
+            retries = app_config["events"]["retries"]
+            break
+        except:
+            logger.error("Failed to connect to Kafka. Retrying...")
+            time.sleep(app_config["events"]["timeout"])
+            retries += 1
+            
+
 
     # Create a consume on a consumer group, that only reads new messages
     # (uncommitted messages) when the service re-starts (i.e., it doesn't
