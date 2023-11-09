@@ -53,7 +53,6 @@ def kafka_connection():
             if retries > 0:
                 logger.info(f"Retried {retries} times")
             client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
-            global topic
             topic = client.topics[str.encode(KAFKA_TOPIC)]
             logger.info("Successfully connected to Kafka")
             retries = app_config["events"]["retries"]
