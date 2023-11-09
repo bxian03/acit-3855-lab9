@@ -45,7 +45,7 @@ logger = logging.getLogger("basicLogger")
 #         time.sleep(app_config["events"]["timeout"])
 #         retries += 1
 
-def connect(self):
+def connect():
     retries = 0
     while retries >= app_config["events"]["retries"]:
         try:
