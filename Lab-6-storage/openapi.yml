@@ -21,7 +21,14 @@ paths:
       operationId: app.get_pizza_order
       description: Obtain info about an a pizza order based on a timestamp
       parameters:
-        - name: timestamp
+        - name: start_timestamp
+          in: query
+          description: limit results by time
+          schema:
+            type: string
+            format: date-time
+            example: 2016-08-29T09:12:33.001Z
+        - name: end_timestamp
           in: query
           description: limit results by time
           schema:
@@ -54,7 +61,14 @@ paths:
       operationId: app.get_driver_order
       description: Obtain info about a driver order based on a time stamp
       parameters:
-        - name: timestamp
+        - name: start_timestamp
+          in: query
+          description: limit results by time
+          schema:
+            type: string
+            format: date-time
+            example: 2016-08-29T09:12:33.001Z
+        - name: end_timestamp
           in: query
           description: limit results by time
           schema:

@@ -74,7 +74,7 @@ def populate_stats():
     # date = datetime.datetime.strftime(date, "%Y-%m-%dT%H:%M:%SZ")
 
     # grab data for driver orders
-    driver_response = requests.get(f"{URL}/drivers/order?timestamp={date}")
+    driver_response = requests.get(f"{URL}/drivers/order?start_timestamp={date}&end_timestamp={datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')}")
 
     driver_body = driver_response.json()
 
@@ -84,7 +84,7 @@ def populate_stats():
         logger.error("Error in request")
 
     # grab data for pizza orders
-    pizza_response = requests.get(f"{URL}/pizza/order?timestamp={date}")
+    pizza_response = requests.get(f"{URL}/pizza/order?start_timestamp={date}&end_timestamp={datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')}")
 
     pizza_body = pizza_response.json()
 

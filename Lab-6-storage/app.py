@@ -1,7 +1,7 @@
 import connexion
 from connexion import NoContent
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from base import Base
 from pizza_order import PizzaOrder
@@ -45,15 +45,16 @@ def write_log(event_name: str, trace_id: str):
 
     logger.debug(log)
 
-def get_pizza_order(timestamp: str):
+def get_pizza_order(start_timestamp: str, end_timestamp: str):
     session = DB_SESSION()
 
-    print(timestamp)
-
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    start_timestamp_datetime = datetime.datetime.strptime(start_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
 
     orders = session.query(PizzaOrder).filter(
-        PizzaOrder.time_created >= timestamp_datetime
+        and_(
+            PizzaOrder.time_created >= start_timestamp_datetime,
+            PizzaOrder.time_created < end_timestamp_datetime)
     )
 
     results_list = []
@@ -64,20 +65,22 @@ def get_pizza_order(timestamp: str):
     session.close()
 
     logger.info(
-        f"Query for pizza orders returned after {timestamp} returns {len(results_list)} results"
+        f"Query for pizza orders returned after {start_timestamp} returns {len(results_list)} results"
     )
 
     return results_list, 200
 
-def get_driver_order(timestamp):
+def get_driver_order(start_timestamp:str,end_timestamp:str):
     session = DB_SESSION()
 
-    print(timestamp)
-
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    start_timestamp_datetime = datetime.datetime.strptime(start_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
 
     orders = session.query(DriverOrder).filter(
-        DriverOrder.time_created >= timestamp_datetime
+        and_(
+            DriverOrder.time_created >= start_timestamp_datetime,
+            DriverOrder.time_created < end_timestamp_datetime
+        )
     )
 
     results_list = []
@@ -88,7 +91,7 @@ def get_driver_order(timestamp):
     session.close()
 
     logger.info(
-        f"Query for driver orders returned after {timestamp} returns {len(results_list)} results"
+        f"Query for driver orders returned after {start_timestamp} returns {len(results_list)} results"
     )
 
     return results_list, 200
