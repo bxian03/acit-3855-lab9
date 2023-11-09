@@ -45,33 +45,23 @@ logger = logging.getLogger("basicLogger")
 #         time.sleep(app_config["events"]["timeout"])
 #         retries += 1
 
-class KafkaConnector():
-    def __init__(self) -> None:
-        self.client = None
-        self.topic = None
-
-    def connect(self):
-        retries = 0
-        while retries >= app_config["events"]["retries"]:
-            try:
-                logger.info("Connecting to Kafka...")
-                if retries > 0:
-                    logger.info(f"Retried {retries} times")
-                self.client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
-                self.topic = self.client.topics[str.encode(KAFKA_TOPIC)]
-                logger.info("Successfully connected to Kafka")
-                retries = app_config["events"]["retries"]
-                break
-            except:
-                logger.error("Failed to connect to Kafka. Retrying...")
-                time.sleep(app_config["events"]["timeout"])
-                retries += 1
-
-    def get_sync_producer(self):
-        return self.topic.get_sync_producer()
-    
-kc = KafkaConnector()
-kc.connect()
+def connect(self):
+    retries = 0
+    while retries >= app_config["events"]["retries"]:
+        try:
+            logger.info("Connecting to Kafka...")
+            if retries > 0:
+                logger.info(f"Retried {retries} times")
+            client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
+            topic = client.topics[str.encode(KAFKA_TOPIC)]
+            logger.info("Successfully connected to Kafka")
+            retries = app_config["events"]["retries"]
+            break
+        except:
+            logger.error("Failed to connect to Kafka. Retrying...")
+            time.sleep(app_config["events"]["timeout"])
+            retries += 1
+    return topic.get_sync_producer()
 
 def write_log(
     event_name: str, event_type: str, response_code: int = None, trace_id: str = None
@@ -98,7 +88,6 @@ def upload_pizza_order(body):
     # client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
     # topic = client.topics[str.encode(KAFKA_TOPIC)]
     # producer = topic.get_sync_producer()
-    producer = kc.get_sync_producer()
     msg = {
         "type": "pizza_order",
         "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
@@ -119,7 +108,6 @@ def upload_driver_order(body):
     # client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
     # topic = client.topics[str.encode(KAFKA_TOPIC)]
     # producer = topic.get_sync_producer()
-    producer = kc.get_sync_producer()
 
     msg = {
         "type": "driver_order",
@@ -139,3 +127,4 @@ app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
+    producer = connect()
