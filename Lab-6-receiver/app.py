@@ -45,7 +45,7 @@ logger = logging.getLogger("basicLogger")
 #         time.sleep(app_config["events"]["timeout"])
 #         retries += 1
 
-class KafkaClient():
+class KafkaConnector():
     def __init__(self) -> None:
         retries = 0
         while retries >= app_config["events"]["retries"]:
@@ -66,7 +66,7 @@ class KafkaClient():
     def get_sync_producer(self):
         return self.topic.get_sync_producer()
     
-kc = KafkaClient()
+kc = KafkaConnector()
 
 def write_log(
     event_name: str, event_type: str, response_code: int = None, trace_id: str = None
