@@ -9,6 +9,7 @@ import logging.config
 import uuid
 import time
 from pykafka import KafkaClient
+from pykafka.exceptions import SocketDisconnectedError, LeaderNotAvailable
 
 from connexion import NoContent
 
@@ -29,22 +30,6 @@ with open("log_conf.yml", "r") as fp:
 
 logger = logging.getLogger("basicLogger")
 
-# retries = 0
-# while retries >= app_config["events"]["retries"]:
-#     try:
-#         logger.info("Connecting to Kafka...")
-#         if retries > 0:
-#             logger.info(f"Retried {retries} times")
-#         CLIENT = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
-#         TOPIC = CLIENT.topics[str.encode(KAFKA_TOPIC)]
-#         logger.info("Successfully connected to Kafka")
-#         retries = app_config["events"]["retries"]
-#         break
-#     except:
-#         logger.error("Failed to connect to Kafka. Retrying...")
-#         time.sleep(app_config["events"]["timeout"])
-#         retries += 1
-
 def kafka_connection():
     retries = 0
     while retries <= app_config["events"]["retries"]:
@@ -56,7 +41,7 @@ def kafka_connection():
             topic = client.topics[str.encode(KAFKA_TOPIC)]
             logger.info("Successfully connected to Kafka")
             retries = app_config["events"]["retries"]
-            return topic.get_sync_producer()
+            return topic
             break
         except:
             logger.error("Failed to connect to Kafka. Retrying...")
@@ -87,14 +72,21 @@ def upload_pizza_order(body):
     # response = requests.post(URL1, headers=headers, json=body)
     # client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
     # topic = client.topics[str.encode(KAFKA_TOPIC)]
-    # producer = topic.get_sync_producer()
+    producer = ktopic.get_sync_producer()
     msg = {
         "type": "pizza_order",
         "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "payload": body,
     }
     msg_str = json.dumps(msg)
-    producer.produce(msg_str.encode("utf-8"))
+    try:
+        producer.produce(msg_str.encode("utf-8"))
+    except(SocketDisconnectedError, LeaderNotAvailable) as e:
+        logger.error(e)
+        producer = ktopic.get_sync_producer()
+        producer.stop()
+        producer.start()
+        producer.produce(msg_str.encode("utf-8"))
 
     write_log("pizza order", "response", 201, trace_id)
 
@@ -107,7 +99,7 @@ def upload_driver_order(body):
 
     # client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
     # topic = client.topics[str.encode(KAFKA_TOPIC)]
-    # producer = topic.get_sync_producer()
+    producer = ktopic.get_sync_producer()
 
     msg = {
         "type": "driver_order",
@@ -115,8 +107,15 @@ def upload_driver_order(body):
         "payload": body,
     }
     msg_str = json.dumps(msg)
-    producer.produce(msg_str.encode("utf-8"))
-
+    try:
+        producer.produce(msg_str.encode("utf-8"))
+    except(SocketDisconnectedError, LeaderNotAvailable) as e:
+        logger.error(e)
+        producer = ktopic.get_sync_producer()
+        producer.stop()
+        producer.start()
+        producer.produce(msg_str.encode("utf-8"))
+        
     write_log("driver order", "response", 201, trace_id)
 
     return NoContent, 201
@@ -124,8 +123,8 @@ def upload_driver_order(body):
 
 app = connexion.FlaskApp(__name__, specification_dir="")
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
-global producer
-producer = kafka_connection()
+# global producer
+ktopic = kafka_connection()
 
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
