@@ -13,7 +13,16 @@ from pykafka.exceptions import SocketDisconnectedError, LeaderNotAvailable
 
 from connexion import NoContent
 
-with open("app_conf.yml", "r") as fp:
+if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
+    print("In Test Environment")
+    app_conf_file = "/config/app_conf.yml"
+    log_conf_file = "/config/log_conf.yml"
+else:
+    print("In Dev Environment")
+    app_conf_file = "app_conf.yml"
+    log_conf_file = "log_conf.yml"
+
+with open(app_conf_file, "r") as fp:
     app_config = yaml.safe_load(fp.read())
 
 MAX_EVENTS = 10
@@ -41,7 +50,7 @@ def kafka_connection():
             topic = client.topics[str.encode(KAFKA_TOPIC)]
             logger.info("Successfully connected to Kafka")
             retries = app_config["events"]["retries"]
-            return topic
+            return topic.get_sync_producer()
             break
         except:
             logger.error("Failed to connect to Kafka. Retrying...")
@@ -72,7 +81,7 @@ def upload_pizza_order(body):
     # response = requests.post(URL1, headers=headers, json=body)
     # client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
     # topic = client.topics[str.encode(KAFKA_TOPIC)]
-    producer = ktopic.get_sync_producer()
+    # producer = ktopic.get_sync_producer()
     msg = {
         "type": "pizza_order",
         "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
@@ -83,7 +92,7 @@ def upload_pizza_order(body):
         producer.produce(msg_str.encode("utf-8"))
     except(SocketDisconnectedError, LeaderNotAvailable) as e:
         logger.error(e)
-        producer = ktopic.get_sync_producer()
+        # producer = ktopic.get_sync_producer()
         producer.stop()
         producer.start()
         producer.produce(msg_str.encode("utf-8"))
@@ -99,7 +108,7 @@ def upload_driver_order(body):
 
     # client = KafkaClient(hosts=f"{KAFKA_SERVER}:{KAKFA_PORT}")
     # topic = client.topics[str.encode(KAFKA_TOPIC)]
-    producer = ktopic.get_sync_producer()
+    # producer = ktopic.get_sync_producer()
 
     msg = {
         "type": "driver_order",
@@ -111,7 +120,7 @@ def upload_driver_order(body):
         producer.produce(msg_str.encode("utf-8"))
     except(SocketDisconnectedError, LeaderNotAvailable) as e:
         logger.error(e)
-        producer = ktopic.get_sync_producer()
+        # producer = ktopic.get_sync_producer()
         producer.stop()
         producer.start()
         producer.produce(msg_str.encode("utf-8"))
@@ -124,7 +133,7 @@ def upload_driver_order(body):
 app = connexion.FlaskApp(__name__, specification_dir="")
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
 # global producer
-ktopic = kafka_connection()
+producer = kafka_connection()
 
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
