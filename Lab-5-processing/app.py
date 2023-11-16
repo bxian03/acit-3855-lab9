@@ -180,7 +180,7 @@ def get_stats():
 
     return data, 200
 
-init_scheduler()
+# init_scheduler()
 
 
 app = connexion.FlaskApp(__name__, specification_dir="")
@@ -189,5 +189,5 @@ app.app.config['CORS_HEADERS'] = 'Content-Type'
 app.add_api("openapi.yml", strict_validation=False, validate_responses=True)
 
 if __name__ == "__main__":
-    # init_scheduler()
+    init_scheduler()
     app.run(port=8100, use_reloader=False)
