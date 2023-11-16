@@ -17,14 +17,26 @@ from pykafka.common import OffsetType
 from threading import Thread
 import time
 
-with open("app_conf.yml", "r") as fp:
+if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
+    print("In Test Environment")
+    app_conf_file = "/config/app_conf.yml"
+    log_conf_file = "/config/log_conf.yml"
+else:
+    print("In Dev Environment")
+    app_conf_file = "app_conf.yml"
+    log_conf_file = "log_conf.yml"
+
+with open(app_conf_file, "r") as fp:
     app_config = yaml.safe_load(fp.read())
 
-with open("log_conf.yml", "r") as fp:
+with open(log_conf_file, "r") as fp:
     log_config = yaml.safe_load(fp.read())
     logging.config.dictConfig(log_config)
 
 logger = logging.getLogger("basicLogger")
+
+logger.info("App Conf File: %s" % app_conf_file)
+logger.info("Log Conf File: %s" % log_conf_file)
 
 MYSQL_USER = app_config["mysql"]["MYSQL_USER"]
 MYSQL_PASSWORD = app_config["mysql"]["MYSQL_PASSWORD"]

@@ -4,12 +4,21 @@ import yaml
 import logging
 import logging.config
 from pykafka import KafkaClient
-
+import os
 from connexion import NoContent
 
 from flask_cors import CORS, cross_origin
 
-with open("app_conf.yml", "r") as fp:
+if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
+    print("In Test Environment")
+    app_conf_file = "/config/app_conf.yml"
+    log_conf_file = "/config/log_conf.yml"
+else:
+    print("In Dev Environment")
+    app_conf_file = "app_conf.yml"
+    log_conf_file = "log_conf.yml"
+
+with open(app_conf_file, "r") as fp:
     app_config = yaml.safe_load(fp.read())
 
 MAX_EVENTS = 10
@@ -20,12 +29,14 @@ KAFKA_SERVER = app_config["events"]["hostname"]
 KAFKA_PORT = app_config["events"]["port"]
 KAFKA_TOPIC = app_config["events"]["topic"]
 
-with open("log_conf.yml", "r") as fp:
+with open(log_conf_file, "r") as fp:
     log_config = yaml.safe_load(fp.read())
     logging.config.dictConfig(log_config)
 
 logger = logging.getLogger("basicLogger")
 
+logger.info("App Conf File: %s" % app_conf_file)
+logger.info("Log Conf File: %s" % log_conf_file)
 
 def get_pizza_order(index):
     """Get pizza order in History"""

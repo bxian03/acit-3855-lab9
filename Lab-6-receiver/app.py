@@ -33,11 +33,14 @@ KAFKA_SERVER = app_config["events"]["hostname"]
 KAKFA_PORT = app_config["events"]["port"]
 KAFKA_TOPIC = app_config["events"]["topic"]
 
-with open("log_conf.yml", "r") as fp:
+with open(log_conf_file, "r") as fp:
     log_config = yaml.safe_load(fp.read())
     logging.config.dictConfig(log_config)
 
 logger = logging.getLogger("basicLogger")
+
+logger.info("App Conf File: %s" % app_conf_file)
+logger.info("Log Conf File: %s" % log_conf_file)
 
 def kafka_connection():
     retries = 0
