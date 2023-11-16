@@ -188,8 +188,8 @@ CORS(app.app)
 app.app.config['CORS_HEADERS'] = 'Content-Type'
 app.add_api("openapi.yml", strict_validation=False, validate_responses=True)
 
-if __name__ == "__main__":
-    app.run(port=8100, use_reloader=False)
-    
-if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
     init_scheduler()
+
+if __name__ == "__main__":
+    app.run(port=8100, use_reloader=False, debug=False)
