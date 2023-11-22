@@ -120,6 +120,7 @@ services:
     depends_on:
       - "processing"
       - "audit_log"
+      - "health"
   nginx:
     image: nginx:latest
     # Connects the conf file of the container to the conf file in our folder
@@ -137,6 +138,20 @@ services:
       - "80:80"
     networks:
       - "api.network"
+  health:
+    image: health:latest
+    volumes:
+      - /home/azureuser/config/audit_log:/config
+      - /home/azureuser/logs:/logs
+    ports:
+      - "8120"
+    depends_on:
+      - "receiver"
+      - "storage"
+      - "processing"
+      - "audit_log"
+    networks:
+      - api.network
 # Names our volume
 volumes:
   my-db:
