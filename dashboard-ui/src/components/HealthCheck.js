@@ -33,8 +33,27 @@ export default function HealthCheck(props) {
         
         return (
             <div>
-                <h3>{props.endpoint}-{index}</h3>
-                {JSON.stringify(log)}
+                <h3>{props.endpoint}</h3>
+                {/* {JSON.stringify(log)} */}
+                <table className={"StatsTable"}>
+					<tbody>
+						<tr>
+							<td colSpan="2">receiver: {log['receiver']}</td>
+						</tr>
+						<tr>
+							<td colSpan="2">storage: {log['storage']}</td>
+						</tr>
+						<tr>
+							<td colSpan="2">processing: {log['processing']}</td>
+						</tr>
+                        <tr>
+                            <td colSpan="2">audit: {log['audit']}</td>
+                        </tr>
+                        <tr>
+                            <td colSpan="2">last update: {log['last_update']}</td>
+                        </tr>
+					</tbody>
+                </table>
             </div>
         )
     }
