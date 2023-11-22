@@ -171,7 +171,7 @@ if "TARGET_ENV" not in os.environ or os.environ["TARGET_ENV"] != "test":
     app.app.config["CORS_HEADERS"] = "Content-Type"
 app.add_api(
     "openapi.yml",
-    base_path="/processing",
+    base_path="/health",
     strict_validation=True,
     validate_responses=True,
 )
