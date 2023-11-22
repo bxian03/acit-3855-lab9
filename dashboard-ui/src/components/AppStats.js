@@ -8,7 +8,7 @@ export default function AppStats() {
 
 	const getStats = () => {
 	
-        fetch(`http://acit-3855-docker.eastus.cloudapp.azure.com/processing/stats`)
+        fetch(`http://processing/processing/stats`)
             .then(res => res.json())
             .then((result)=>{
 				console.log("Received Stats")
