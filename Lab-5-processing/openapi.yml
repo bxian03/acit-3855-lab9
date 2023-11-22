@@ -14,8 +14,16 @@ tags:
     description: Operations available to customers
   - name: drivers
     description: Operations available to delivery drivers
-
+  - name: "health"
+    description: Operation available
 paths:
+  /health:
+    get:
+      operationId: app.health
+      summary: returns OK
+      responses:
+        '200':
+          description: Returns 200 OK
   /stats:
     get:
       tags:

@@ -82,6 +82,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_400'
+  /health:
+    summary: Returns 200 OK
+    get:
+      operationId: app.health
+      responses:
+        '200':
+          description: Returns 200 OK
 components:
   schemas:
     driver_order:

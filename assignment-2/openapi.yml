@@ -1,0 +1,51 @@
+---
+openapi: 3.0.0
+info:
+  description: This is an API for ordering pizzas and picking up pizzas for delivery
+  version: "1.0.0"
+  title: Simple Pizza API
+  contact:
+    email: brian.xian@bxian03.systems
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+paths:
+  /:
+    get:
+      operationId: app.health
+      summary: collects status of all other pages
+      responses:
+        '200':
+          description: Returns status off all other pages in json
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/stats'
+
+components:
+  schemas:
+    stats:
+      required:
+      - receiver
+      - storage
+      - processing
+      - audit
+      - last_update
+      properties:
+        receiver:
+          type: string
+          example: "Running"
+        storage:
+          type: string
+          example: "Running"
+        processing:
+          type: string
+          example: "Running"
+        audit:
+          type: string
+          example: "Running"
+        last_update:
+          type: string
+          format: date-time
+          example: "2016-08-29T09:12:33.001Z"

@@ -1,0 +1,14 @@
+datastore:
+  filename: data.json
+scheduler:
+  period_sec: 20
+endpoints:
+  receiver:
+    path: "receiver/health"
+  storage:
+    path: "storage/health"
+  processing:
+    path: "processing/health"
+  audit:
+    path: "audit/health"
+url: acit-3855-docker.eastus.cloudapp.azure.com

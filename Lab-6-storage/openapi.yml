@@ -93,7 +93,13 @@ paths:
                 properties:
                   message:
                     type: string
-      
+  /health:
+    summary: Returns 200 OK
+    get:
+      operationId: app.health
+      responses:
+        '200':
+          description: Returns 200 OK
 components:
   schemas:
     Order:

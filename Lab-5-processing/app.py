@@ -182,6 +182,9 @@ def get_stats():
 
 # init_scheduler()
 
+def health():
+    return NoContent, 200
+
 
 app = connexion.FlaskApp(__name__, specification_dir="")
 if "TARGET_ENV" not in os.environ or os.environ["TARGET_ENV"] != "test":

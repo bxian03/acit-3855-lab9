@@ -47,6 +47,13 @@ paths:
         "201":
           description: Successfully uploaded an available order
       operationId: app.upload_driver_order
+  /health:
+    summary: Returns 200 OK
+    get:
+      operationId: app.health
+      responses:
+        '200':
+          description: Returns 200 OK
 components:
   schemas:
     Order:

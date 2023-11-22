@@ -132,6 +132,8 @@ def upload_driver_order(body):
 
     return NoContent, 201
 
+def health():
+    return NoContent ,200
 
 app = connexion.FlaskApp(__name__, specification_dir="")
 app.add_api("openapi.yaml",base_path="/receiver", strict_validation=True, validate_responses=True)
