@@ -34,6 +34,7 @@ logger = logging.getLogger("basicLogger")
 logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
+# load the variables
 URL = app_config["url"]
 RECEIVER_PATH = app_config["endpoints"]["receiver"]["path"]
 STORAGE_PATH = app_config["endpoints"]["storage"]["path"]
@@ -42,6 +43,7 @@ AUDIT_PATH = app_config["endpoints"]["audit"]["path"]
 
 
 def init_scheduler():
+    """Initialize the scheduler"""
     sched = BackgroundScheduler(daemon=True)
     sched.add_job(
         populate_stats, "interval", seconds=app_config["scheduler"]["period_sec"]
@@ -84,56 +86,76 @@ def populate_stats():
             date = data["last_update"]
 
     ### Get the status of all end points
+
+    # Try to make a request to the receiver's health end point
     try:
         receiver_response = requests.get(f"http://{URL}/{RECEIVER_PATH}", timeout=5)
+        # service is considered up if it replies with 200 OK as expected
         if receiver_response.status_code == 200:
             receiver_health = "Running"
+        # in case we get something that isn't 200 OK
         else:
             receiver_health = "NOT OK"
             logger.info("NOT OK")
+    # if the request times out (the service is down) the service is considered down
     except:
         receiver_health = "Down"
 
-
-
+    # Debug message for receiver health
     logger.debug(f"Receiver: {receiver_health}")
 
+    # Try to make a request to the storage's health end point
     try:
         storge_response = requests.get(f"http://{URL}/{STORAGE_PATH}", timeout=5)
+        # service is considered up if it replies with 200 OK as expected
         if storge_response.status_code == 200:
             storage_health = "Running"
+        # in case we get something that isn't 200 OK
         else:
             storage_health = "NOT OK"
             logger.info("NOT OK")
+    # if the request times out (the service is down) the service is considered down
     except:
         storage_health = "Down"
 
+    # debug message for storage health
     logger.debug(f"Storage: {storage_health}")
 
+    # Try to make a request to processing's health end point
     try:
         processing_response = requests.get(f"http://{URL}/{PROCESSING_PATH}", timeout=5)
+        # service is considered up if it replies with 200 OK as expected
         if processing_response.status_code == 200:
             processing_health = "Running"
+        # in case we get something that isn't 200 OK
         else:
             processing_health = "NOT OK"
             logger.info("NOT OK")
+    # if the request times out (the service is down) the service is considered down
     except:
         processing_health = "Down"
 
+    # debug message for processing health
     logger.debug(f"Processing: {processing_health}")
 
+    # Try to make a request to the audit's health end point
     try:
         audit_response = requests.get(f"http://{URL}/{AUDIT_PATH}", timeout=5)
+        # service is considered up if it replies with 200 OK as expected
         if audit_response.status_code == 200:
             audit_health = "Running"
+        # in case we get something that isn't 200 OK
         else:
             audit_health = "NOT OK"
             logger.info("NOT OK")
+    # if the request times out (the service is down) the service is considered down
     except:
         audit_health = "Down"
 
+    # debug message for audit health
     logger.debug(f"Audit: {audit_health}")
 
+    # format the data
     data = {
         "receiver": receiver_health,
         "storage": storage_health,
@@ -141,25 +163,32 @@ def populate_stats():
         "audit": audit_health,
         "last_update": date,
     }
+    # write the data to a file
     with open(app_config["datastore"]["filename"], "w") as fp:
         # fp.write()
         json.dump(data, fp)
 
+    # debug the final data
     logger.debug(data)
 
 
 def health():
+    """Return health status of all services"""
     logger.info("request has started")
 
+    # check if the data file exists
     if os.path.isfile(app_config["datastore"]["filename"]) != True:
         logger.error("Statistics do not exist")
         return NoContent, 404
 
+    # read the data file
     with open(app_config["datastore"]["filename"], "r") as fp:
         data = json.load(fp)
 
+    # debug the file
     logger.debug(data)
 
+    # request complete
     logger.info("Request has completed")
 
     return data, 200
