@@ -8,6 +8,13 @@ export default function HealthCheck(props) {
 	// const rand_val = Math.floor(Math.random() * 100); // Get a random event from the event store
     const [index] = useState(null)
 
+    // Get current seconds
+    const date_now = new Date();
+
+    // Get seconds from json data
+    const date_before = new Date(log['last_updated']);
+    const date_dif = ((date_now.getTime() - date_before.getTime()) / 1000);
+
     const getAudit = () => {
         fetch(`http://acit-3855-docker.eastus.cloudapp.azure.com/${props.endpoint}`)
             .then(res => res.json())
@@ -50,7 +57,7 @@ export default function HealthCheck(props) {
                             <td colSpan="2">audit: {log['audit']}</td>
                         </tr>
                         <tr>
-                            <td colSpan="2">last update: {log['last_update']}</td>
+                            <td colSpan="2">last updated: {date_dif} seconds ago</td>
                         </tr>
 					</tbody>
                 </table>
