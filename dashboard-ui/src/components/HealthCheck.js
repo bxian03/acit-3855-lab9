@@ -56,7 +56,7 @@ export default function HealthCheck(props) {
                             <td colSpan="2">audit: {log['audit']}</td>
                         </tr>
                         <tr>
-                            <td colSpan="2">last updated: {date_dif} seconds ago</td>
+                            <td colSpan="2">last updated: {(new Date().getTime() - new Date(log['last_update']).getTime() )/ 1000} seconds ago</td>
                         </tr>
 					</tbody>
                 </table>
