@@ -8,13 +8,6 @@ export default function HealthCheck(props) {
 	// const rand_val = Math.floor(Math.random() * 100); // Get a random event from the event store
     const [index] = useState(null)
 
-    // Get current seconds
-    const date_now = new Date();
-
-    // Get seconds from json data
-    const date_before = new Date(log['last_updated']);
-    const date_dif = ((date_now.getTime() - date_before.getTime()) / 1000);
-
     const getAudit = () => {
         fetch(`http://acit-3855-docker.eastus.cloudapp.azure.com/${props.endpoint}`)
             .then(res => res.json())
@@ -31,6 +24,13 @@ export default function HealthCheck(props) {
 		const interval = setInterval(() => getAudit(), 4000); // Update every 4 seconds
 		return() => clearInterval(interval);
     }, [getAudit]);
+
+    // Get current seconds
+    const date_now = new Date();
+
+    // Get seconds from json data
+    const date_before = new Date(log['last_updated']);
+    const date_dif = ((date_now.getTime() - date_before.getTime()) / 1000);
 
     if (error){
         return (<div className={"error"}>Error found when fetching from API</div>)
