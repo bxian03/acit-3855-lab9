@@ -25,19 +25,17 @@ export default function HealthCheck(props) {
 		return() => clearInterval(interval);
     }, [getAudit]);
 
-    // Get current seconds
-    const date_now = new Date();
-
-    // Get seconds from json data
-    const date_before = new Date(log['last_updated']);
-    const date_dif = ((date_now.getTime() - date_before.getTime()) / 1000);
-
     if (error){
         return (<div className={"error"}>Error found when fetching from API</div>)
     } else if (isLoaded === false){
         return(<div>Loading...</div>)
     } else if (isLoaded === true){
-        
+            // Get current seconds
+        const date_now = new Date();
+
+        // Get seconds from json data
+        const date_before = new Date(log['last_update']);
+        const date_dif = ((date_now.getTime() - date_before.getTime()) / 1000);
         return (
             <div>
                 <h3>{props.endpoint}</h3>
