@@ -35,7 +35,7 @@ export default function HealthCheck(props) {
 
         // Get seconds from json data
         const date_before = new Date(log['last_update']);
-        const date_dif = (date_now.getSeconds() - date_before.getSeconds());
+        const date_dif = (date_now - date_before) / 1000;
         return (
             <div>
                 <h3>{props.endpoint}</h3>
