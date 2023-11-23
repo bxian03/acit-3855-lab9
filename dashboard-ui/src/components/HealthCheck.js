@@ -37,7 +37,7 @@ export default function HealthCheck(props) {
         const date_before = new Date(log['last_update']);
         const date_dif = (date_now.getTime() - date_before.getTime()) / 1000;
         
-        // {Math.floor((new Date() - new Date(stats["last_update"])) / 1000)}
+        return (
             <div>
                 <h3>{props.endpoint}</h3>
                 {/* {JSON.stringify(log)} */}
