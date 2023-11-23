@@ -141,10 +141,12 @@ services:
   health:
     image: health:latest
     volumes:
-      - /home/azureuser/config/audit_log:/config
+      - /home/azureuser/config/health:/config
       - /home/azureuser/logs:/logs
     ports:
       - "8120"
+    environment:
+      - TARGET_ENV=test
     depends_on:
       - "receiver"
       - "storage"
