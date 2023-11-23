@@ -30,12 +30,6 @@ export default function HealthCheck(props) {
     } else if (isLoaded === false){
         return(<div>Loading...</div>)
     } else if (isLoaded === true){
-            // Get current seconds
-        const date_now = new Date();
-
-        // Get seconds from json data
-        const date_before = new Date(log['last_update']);
-        const date_dif = (date_now.getTime() - date_before.getTime()) / 1000;
         
         return (
             <div>
@@ -56,7 +50,7 @@ export default function HealthCheck(props) {
                             <td colSpan="2">audit: {log['audit']}</td>
                         </tr>
                         <tr>
-                            <td colSpan="2">last updated: {Math.floor((new Date() - new Date(log["last_update"])) / 1000)} seconds ago</td>
+                            <td colSpan="2">last update: {log['last_update']}</td>
                         </tr>
 					</tbody>
                 </table>
