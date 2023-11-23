@@ -161,7 +161,7 @@ def populate_stats():
         "storage": storage_health,
         "processing": processing_health,
         "audit": audit_health,
-        "last_update": date,
+        "last_update": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
     # write the data to a file
     with open(app_config["datastore"]["filename"], "w") as fp:
