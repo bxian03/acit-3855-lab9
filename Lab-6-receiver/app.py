@@ -43,6 +43,7 @@ logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
 def kafka_connection():
+    """Kafka connection"""
     retries = 0
     while retries <= app_config["events"]["retries"]:
         try:
@@ -63,6 +64,7 @@ def kafka_connection():
 def write_log(
     event_name: str, event_type: str, response_code: int = None, trace_id: str = None
 ) -> uuid.UUID:
+    """Writes events to the log"""
     # create the trace id if it doesn't exist
     if trace_id is None:
         trace_id = uuid.uuid4()
@@ -78,6 +80,7 @@ def write_log(
 
 
 def upload_pizza_order(body):
+    """Produces pizza order event to Kafka"""
     trace_id = write_log("pizza order", "request")
     body["trace_id"] = str(trace_id)
 
@@ -106,6 +109,7 @@ def upload_pizza_order(body):
 
 
 def upload_driver_order(body):
+    """Produces driver order event to Kafka"""
     trace_id = write_log("driver order", "request")
     body["trace_id"] = str(trace_id)
 
@@ -133,6 +137,7 @@ def upload_driver_order(body):
     return NoContent, 201
 
 def health():
+    """Endpoint for health checking"""
     return NoContent ,200
 
 app = connexion.FlaskApp(__name__, specification_dir="")

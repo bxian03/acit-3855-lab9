@@ -36,6 +36,7 @@ logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
 def init_scheduler():
+    """Initialize the scheduler"""
     sched = BackgroundScheduler(daemon=True)
     sched.add_job(
         populate_stats, "interval", seconds=app_config["scheduler"]["period_sec"]
@@ -165,6 +166,7 @@ def populate_stats():
 
 
 def get_stats():
+    """Endpoint for returning statistics"""
     logger.info("request has started")
 
     if os.path.isfile(app_config["datastore"]["filename"]) != True:

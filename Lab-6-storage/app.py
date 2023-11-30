@@ -55,11 +55,13 @@ DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
 
 def write_log(event_name: str, trace_id: str):
+    """Writes event to the log"""
     log = f"Stored event {event_name} request with a trace id of {trace_id}"
 
     logger.debug(log)
 
 def get_pizza_order(start_timestamp: str, end_timestamp: str):
+    """Returns pizza orders"""
     session = DB_SESSION()
 
     start_timestamp_datetime = datetime.datetime.strptime(start_timestamp, "%Y-%m-%dT%H:%M:%SZ")
@@ -85,6 +87,7 @@ def get_pizza_order(start_timestamp: str, end_timestamp: str):
     return results_list, 200
 
 def get_driver_order(start_timestamp:str,end_timestamp:str):
+    """Returns driver orders"""
     session = DB_SESSION()
 
     start_timestamp_datetime = datetime.datetime.strptime(start_timestamp, "%Y-%m-%dT%H:%M:%SZ")
@@ -190,6 +193,7 @@ def process_messages():
         consumer.commit_offsets()
 
 def health():
+    """Endpoint for health checking"""
     return NoContent ,200
 
 app = connexion.FlaskApp(__name__, specification_dir="")
