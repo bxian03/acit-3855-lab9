@@ -49,7 +49,7 @@ services:
     volumes:
       - my-db:/var/lib/mysql
   storage:
-    image: storage:latest
+    image: bxian03/storage:latest
     hostname: storage
     restart: unless-stopped
     ports:
@@ -65,7 +65,7 @@ services:
       - "db"
       - "kafka"
   receiver:
-    image: receiver:latest
+    image: bxian03/receiver:latest
     hostname: receiver
     restart: unless-stopped
     ports:
@@ -80,7 +80,7 @@ services:
     depends_on:
       - storage
   processing:
-    image: processing:latest
+    image: bxian03/processing:latest
     hostname: processing
     restart: unless-stopped
     ports:
@@ -96,7 +96,7 @@ services:
     depends_on:
       - storage
   audit_log:
-    image: audit_log:latest
+    image: bxian03/audit_log:latest
     hostname: audit_log
     restart: unless-stopped
     ports:
